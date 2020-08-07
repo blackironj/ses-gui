@@ -29,7 +29,6 @@ type LoginView struct {
 }
 
 func NewLoginPage(navigator router.Navigator) (router.Page, error) {
-
 	errLabel := widget.NewLabel("")
 
 	accessKeyID := widget.NewEntry()
@@ -54,7 +53,13 @@ func NewLoginPage(navigator router.Navigator) (router.Page, error) {
 		if accessKeyID.Text == "" || scretKey.Text == "" || regions.Text == "" {
 			errLabel.SetText("Key and region must be set")
 		} else {
-			// Call aws-ses api and then do something
+			//TODO: Call aws-ses api and then it's a right key
+
+			//go to list view
+			err := navigator.Push(router.ListPath, "")
+			if err != nil {
+				errLabel.SetText(err.Error())
+			}
 		}
 	}
 

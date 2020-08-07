@@ -10,6 +10,11 @@ import (
 	"fyne.io/fyne/widget"
 )
 
+const (
+	LoginPath = "/login"
+	ListPath  = "/list"
+)
+
 type Navigator interface {
 	Push(path string, ctx interface{}) error
 	Pop() error

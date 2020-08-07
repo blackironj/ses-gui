@@ -1,30 +1,33 @@
 package main
 
 import (
+	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 
 	"github.com/blackironj/ses-gui/router"
 	"github.com/blackironj/ses-gui/screens"
 )
 
-const (
-	LoginPath = "/login"
-)
-
 func main() {
 	var cfg router.RouterConfig
-	cfg.Route(LoginPath, func(navigator router.Navigator, ctx interface{}) (router.Page, error) {
+	cfg.Route(router.LoginPath, func(navigator router.Navigator, ctx interface{}) (router.Page, error) {
 		return screens.NewLoginPage(navigator)
 	})
 
-	cfg.InitialPath(LoginPath)
+	cfg.Route(router.ListPath, func(navigator router.Navigator, ctx interface{}) (router.Page, error) {
+		return screens.NewListPage(navigator)
+	})
+
+	cfg.InitialPath(router.LoginPath)
 
 	myApp := app.New()
 	myWindow := myApp.NewWindow("SES-gui")
+
 	router, err := cfg.Build()
 	panicIfErr(err)
 
 	myWindow.SetContent(router)
+	myWindow.Resize(fyne.NewSize(640, 480))
 	myWindow.ShowAndRun()
 }
 

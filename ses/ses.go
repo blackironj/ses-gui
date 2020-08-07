@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-var EamilServiceSess *session.Session
+var AwsSession *session.Session
 
 // NewSession makes a new aws session
 func NewSession(id, key, region string) (*session.Session, error) {

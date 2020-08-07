@@ -10,10 +10,10 @@ import (
 
 // ListSEStemplates gets email-templates from AWS-SES
 func ListSEStemplates(max int) ([]*sessdk.TemplateMetadata, error) {
-	if EamilServiceSess == nil {
+	if AwsSession == nil {
 		return nil, errors.New("fail to access")
 	}
-	sesClient := sessdk.New(EamilServiceSess)
+	sesClient := sessdk.New(AwsSession)
 
 	listTemplatesInput := sessdk.ListTemplatesInput{
 		MaxItems: aws.Int64(int64(max)),
@@ -28,7 +28,7 @@ func ListSEStemplates(max int) ([]*sessdk.TemplateMetadata, error) {
 
 // UploadSEStemplate uploads a email-template to AWS-SES
 func UploadSEStemplate(sesTemplate *sessdk.Template) error {
-	sesClient := sessdk.New(EamilServiceSess)
+	sesClient := sessdk.New(AwsSession)
 
 	createTemplateInput := &ses.CreateTemplateInput{
 		Template: sesTemplate,
@@ -43,7 +43,7 @@ func UploadSEStemplate(sesTemplate *sessdk.Template) error {
 
 // DeleteSEStemplate deletes a email-template from AWS-SES
 func DeleteSEStemplate(name *string) error {
-	sesClient := sessdk.New(EamilServiceSess)
+	sesClient := sessdk.New(AwsSession)
 
 	deleteTemplateInput := &ses.DeleteTemplateInput{
 		TemplateName: name,
@@ -58,7 +58,7 @@ func DeleteSEStemplate(name *string) error {
 
 // GetSEStemplate gets a specific email-template from AWS-SES
 func GetSEStemplate(name *string) (*sessdk.GetTemplateOutput, error) {
-	sesClient := sessdk.New(EamilServiceSess)
+	sesClient := sessdk.New(AwsSession)
 
 	getTemplateInput := &ses.GetTemplateInput{
 		TemplateName: name,
@@ -73,7 +73,7 @@ func GetSEStemplate(name *string) (*sessdk.GetTemplateOutput, error) {
 
 // SendEmailWithUnregisteredTemplate sends a email using unregistered template
 func SendEmailWithUnregisteredTemplate(input *sessdk.SendEmailInput) error {
-	sesClient := sessdk.New(EamilServiceSess)
+	sesClient := sessdk.New(AwsSession)
 
 	_, err := sesClient.SendEmail(input)
 	if err != nil {

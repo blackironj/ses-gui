@@ -6,6 +6,7 @@ import (
 	"fyne.io/fyne/widget"
 
 	"github.com/blackironj/ses-gui/router"
+	"github.com/blackironj/ses-gui/ses"
 )
 
 var regionList = []string{
@@ -53,10 +54,21 @@ func NewLoginPage(navigator router.Navigator) (router.Page, error) {
 		if accessKeyID.Text == "" || scretKey.Text == "" || regions.Text == "" {
 			errLabel.SetText("Key and region must be set")
 		} else {
-			//TODO: Call aws-ses api and then it's a right key
+			var err error
+			ses.AwsSession, err = ses.NewSession(accessKeyID.Text, scretKey.Text, regions.Text)
+			if err != nil {
+				errLabel.SetText("Can not make a session")
+				return
+			}
+
+			_, err = ses.ListSEStemplates(10)
+			if err != nil {
+				errLabel.SetText("Can not access. Please check keys")
+				return
+			}
 
 			//go to list view
-			err := navigator.Push(router.ListPath, "")
+			err = navigator.Push(router.ListPath, "")
 			if err != nil {
 				errLabel.SetText(err.Error())
 			}

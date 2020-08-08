@@ -5,8 +5,8 @@ import (
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/layout"
-	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
+
 	"github.com/blackironj/ses-gui/router"
 )
 
@@ -14,7 +14,7 @@ type MainView struct {
 	fyne.Widget
 }
 
-func NewMainPage(navigator router.Navigator) (router.Page, error) {
+func NewMainPage(navigator router.Navigator, window fyne.Window) (router.Page, error) {
 	sample := widget.NewMultiLineEntry()
 	sample.SetReadOnly(true)
 	/*TODO: 1. Get template list from aws-ses
@@ -30,11 +30,7 @@ func NewMainPage(navigator router.Navigator) (router.Page, error) {
 		buttons = append(buttons, newButton)
 	}
 
-	uploadBtn := widget.NewButtonWithIcon("Upload a Template", theme.ContentAddIcon(), func() {
-		//TODO: show a file upload window
-		sample.SetText(fmt.Sprintf("Upload button is tapped"))
-		sample.Refresh()
-	})
+	uploadBtn := makeUploadViewBtn(window)
 
 	templateBtns := widget.NewVScrollContainer(widget.NewVBox(buttons...))
 

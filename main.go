@@ -14,8 +14,8 @@ func main() {
 		return screens.NewLoginPage(navigator)
 	})
 
-	cfg.Route(router.ListPath, func(navigator router.Navigator, ctx interface{}) (router.Page, error) {
-		return screens.NewListPage(navigator)
+	cfg.Route(router.MainPath, func(navigator router.Navigator, ctx interface{}) (router.Page, error) {
+		return screens.NewMainPage(navigator)
 	})
 
 	cfg.InitialPath(router.LoginPath)

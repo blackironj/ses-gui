@@ -12,7 +12,7 @@ import (
 
 const (
 	LoginPath = "/login"
-	ListPath  = "/list"
+	MainPath  = "/main"
 )
 
 type Navigator interface {

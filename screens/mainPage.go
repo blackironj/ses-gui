@@ -10,11 +10,11 @@ import (
 	"github.com/blackironj/ses-gui/router"
 )
 
-type ListView struct {
+type MainView struct {
 	fyne.Widget
 }
 
-func NewListPage(navigator router.Navigator) (router.Page, error) {
+func NewMainPage(navigator router.Navigator) (router.Page, error) {
 	sample := widget.NewMultiLineEntry()
 	sample.SetReadOnly(true)
 	/*TODO: 1. Get template list from aws-ses
@@ -46,11 +46,11 @@ func NewListPage(navigator router.Navigator) (router.Page, error) {
 	right := widget.NewVScrollContainer(sample)
 
 	content := widget.NewHBox(left, right)
-	return &ListView{
+	return &MainView{
 		content,
 	}, nil
 }
 
-func (page *ListView) BeforeDestroy() {
+func (page *MainView) BeforeDestroy() {
 
 }

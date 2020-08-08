@@ -67,8 +67,8 @@ func NewLoginPage(navigator router.Navigator) (router.Page, error) {
 				return
 			}
 
-			//go to list view
-			err = navigator.Push(router.ListPath, "")
+			//go to main view
+			err = navigator.Push(router.MainPath, "")
 			if err != nil {
 				errLabel.SetText(err.Error())
 			}

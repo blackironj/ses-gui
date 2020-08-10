@@ -61,7 +61,7 @@ func NewLoginPage(navigator router.Navigator) (router.Page, error) {
 				return
 			}
 
-			_, err = ses.ListSEStemplates(10)
+			_, err = ses.ListSEStemplates()
 			if err != nil {
 				errLabel.SetText("Can not access. Please check keys")
 				return

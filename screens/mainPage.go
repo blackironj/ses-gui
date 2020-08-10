@@ -22,7 +22,7 @@ func NewMainPage(navigator router.Navigator, window fyne.Window) (router.Page, e
 		templateList,
 	)
 
-	right := widget.NewVBox(&currSelectedTemplate)
+	right := &currSelectedTemplate
 
 	content := widget.NewHBox(left, right)
 	return &MainView{

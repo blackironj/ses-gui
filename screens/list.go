@@ -1,6 +1,8 @@
 package screens
 
 import (
+	"fmt"
+
 	"fyne.io/fyne"
 	"fyne.io/fyne/widget"
 
@@ -26,12 +28,16 @@ func updateTemplateList() {
 		listTemplate.Children = []fyne.CanvasObject{widget.NewLabel("No templates")}
 	}
 
+	btns := make([]fyne.CanvasObject, 0, 20)
 	for _, data := range templates {
-		btn := widget.NewButton(*data.Name, func() {
-			currSelectedTemplate.SetText(*data.Name)
+		name := *data.Name
+		btn := widget.NewButton(name, func() {
+			currSelectedTemplate.SetText(fmt.Sprintf("Selected Template : %s", name))
 			currSelectedTemplate.Refresh()
 		})
-		listTemplate.Children = append(listTemplate.Children, btn)
+		btns = append(btns, btn)
 	}
+	listTemplate.Children = btns
+
 	listTemplate.Refresh()
 }

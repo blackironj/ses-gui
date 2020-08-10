@@ -69,6 +69,7 @@ func makeUploadViewBtn(window fyne.Window) *widget.Button {
 						dialog.ShowError(err, window)
 					} else {
 						dialog.ShowInformation("Information", "Success to upload", window)
+						updateTemplateList()
 					}
 				}, window)
 		})

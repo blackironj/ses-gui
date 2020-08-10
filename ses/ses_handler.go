@@ -9,21 +9,31 @@ import (
 )
 
 // ListSEStemplates gets email-templates from AWS-SES
-func ListSEStemplates(max int) ([]*sessdk.TemplateMetadata, error) {
+func ListSEStemplates() ([]*sessdk.TemplateMetadata, error) {
 	if AwsSession == nil {
 		return nil, errors.New("fail to access")
 	}
 	sesClient := sessdk.New(AwsSession)
 
-	listTemplatesInput := sessdk.ListTemplatesInput{
-		MaxItems: aws.Int64(int64(max)),
+	input := sessdk.ListTemplatesInput{
+		MaxItems: aws.Int64(10),
 	}
 
-	listTemplatesOutput, err := sesClient.ListTemplates(&listTemplatesInput)
-	if err != nil {
-		return nil, err
+	templateOutputs := make([]*sessdk.TemplateMetadata, 0, 20)
+	for {
+		output, err := sesClient.ListTemplates(&input)
+		if err != nil {
+			return nil, err
+		}
+
+		templateOutputs = append(templateOutputs, output.TemplatesMetadata...)
+		if output.NextToken == nil {
+			break
+		}
+		input.NextToken = output.NextToken
 	}
-	return listTemplatesOutput.TemplatesMetadata, nil
+
+	return templateOutputs, nil
 }
 
 // UploadSEStemplate uploads a email-template to AWS-SES

@@ -11,7 +11,8 @@ Currently, AWS-SES does not provide GUI editor yet.  So you can use AWS-CLI tool
 ## TODO
 - [x] Login with a aws access key
 - [x] upload a email template
-- [ ] download a email template
+- [x] download a email template
 - [x] show list of templates
+- [ ] delete a template
 - [ ] send a email with selected template
 - [ ] enhance UI / UX

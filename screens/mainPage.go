@@ -22,7 +22,12 @@ func NewMainPage(navigator router.Navigator, window fyne.Window) (router.Page, e
 		templateList,
 	)
 
-	right := &currSelectedTemplate
+	downloadBtn := makeDownloadBtn(window)
+	currSelected := widget.NewHBox(
+		widget.NewLabel("Current template : "),
+		&currSelectedTemplate,
+	)
+	right := widget.NewVBox(currSelected, downloadBtn)
 
 	content := widget.NewHBox(left, right)
 	return &MainView{

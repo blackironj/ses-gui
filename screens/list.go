@@ -1,8 +1,6 @@
 package screens
 
 import (
-	"fmt"
-
 	"fyne.io/fyne"
 	"fyne.io/fyne/widget"
 
@@ -32,7 +30,7 @@ func updateTemplateList() {
 	for _, data := range templates {
 		name := *data.Name
 		btn := widget.NewButton(name, func() {
-			currSelectedTemplate.SetText(fmt.Sprintf("Selected Template : %s", name))
+			currSelectedTemplate.SetText(name)
 			currSelectedTemplate.Refresh()
 		})
 		btns = append(btns, btn)

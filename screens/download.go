@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/dialog"
@@ -45,7 +47,34 @@ func makeDownloadBtn(window fyne.Window) *widget.Button {
 				dialog.ShowError(errors.New("Fail to save a template file"), window)
 				fyne.LogError("fail to save a file", writeErr)
 			}
-			dialog.ShowInformation("Success", fmt.Sprintf("save path : %s", downPath), window)
+
+			infoWin := dialog.NewConfirm("Success", fmt.Sprintf("save path : %s", downPath),
+				func(response bool) {
+					if response {
+						openHTML(downPath)
+					}
+				}, window)
+
+			infoWin.SetDismissText("Close")
+			infoWin.SetConfirmText("Open HTML")
+			infoWin.Show()
 		})
 	return downloadwBtn
+}
+
+func openHTML(path string) {
+	var args []string
+	switch runtime.GOOS {
+	case "darwin":
+		args = []string{"open", path}
+	case "windows":
+		args = []string{"cmd", "/c", "start", path}
+	default:
+		args = []string{"xdg-open", path}
+	}
+	cmd := exec.Command(args[0], args[1:]...)
+	err := cmd.Run()
+	if err != nil {
+		fyne.LogError("open in browser", err)
+	}
 }

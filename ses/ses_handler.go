@@ -1,6 +1,7 @@
 package ses
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -81,13 +82,44 @@ func GetSEStemplate(name *string) (*sessdk.GetTemplateOutput, error) {
 	return getTemplateOutput, nil
 }
 
-// SendEmailWithUnregisteredTemplate sends a email using unregistered template
-func SendEmailWithUnregisteredTemplate(input *sessdk.SendEmailInput) error {
+// SendEmailWithTemplate sends a email with html template
+func SendEmailWithTemplate(sender, recipient, templateName string, datas map[string]interface{}) error {
 	sesClient := sessdk.New(AwsSession)
 
-	_, err := sesClient.SendEmail(input)
+	templatedInput := &ses.SendTemplatedEmailInput{
+		Destination: &ses.Destination{
+			CcAddresses: []*string{},
+			ToAddresses: []*string{
+				aws.String(recipient),
+			},
+		},
+		Source:   aws.String(sender),
+		Template: aws.String(templateName),
+	}
+
+	if len(datas) != 0 {
+		templateDatas, genErr := genTemplateDatas(datas)
+		if genErr != nil {
+			return genErr
+		}
+		templatedInput.TemplateData = templateDatas
+	}
+
+	_, err := sesClient.SendTemplatedEmail(templatedInput)
+
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func genTemplateDatas(datas map[string]interface{}) (*string, error) {
+	rawJSON, marshalErr := json.Marshal(datas)
+	if marshalErr != nil {
+		return nil, marshalErr
+	}
+
+	jsonStr := string(rawJSON)
+
+	return &jsonStr, nil
 }

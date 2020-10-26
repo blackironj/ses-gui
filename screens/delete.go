@@ -2,6 +2,7 @@ package screens
 
 import (
 	"errors"
+	"fmt"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/dialog"
@@ -32,7 +33,7 @@ func makeDeleteBtn(window fyne.Window) *widget.Button {
 				}
 			}
 
-			cnf := dialog.NewConfirm("Confirmation", "Are you sure to delete a this template?", deletionConfirmCallback, window)
+			cnf := dialog.NewConfirm("Confirmation", fmt.Sprintf("Are you sure to delete \"%s\"", currSelectedTemplate.Text), deletionConfirmCallback, window)
 			cnf.SetDismissText("No")
 			cnf.SetConfirmText("Yes")
 			cnf.Show()

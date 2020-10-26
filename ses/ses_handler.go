@@ -74,7 +74,10 @@ func DeleteSEStemplate(name *string) error {
 // GetSEStemplate gets a specific email-template from AWS-SES
 func GetSEStemplate(name *string) (*sessdk.GetTemplateOutput, error) {
 	sesClient := sessdk.New(AwsSession)
+	return getSEStemplate(sesClient, name)
+}
 
+func getSEStemplate(sesClient *sessdk.SES, name *string) (*sessdk.GetTemplateOutput, error) {
 	getTemplateInput := &ses.GetTemplateInput{
 		TemplateName: name,
 	}
@@ -90,8 +93,7 @@ func GetSEStemplate(name *string) (*sessdk.GetTemplateOutput, error) {
 func SendEmailWithTemplate(sender, recipient, templateName string, datas ...map[string]interface{}) error {
 	sesClient := sessdk.New(AwsSession)
 
-	source := aws.String(sender)
-	destination := &ses.Destination{
+	dest := &ses.Destination{
 		CcAddresses: []*string{},
 		ToAddresses: []*string{
 			aws.String(recipient),
@@ -99,32 +101,39 @@ func SendEmailWithTemplate(sender, recipient, templateName string, datas ...map[
 	}
 
 	if len(datas) != 0 {
-		templateDatas, err := genTemplateDatas(datas[0])
-		if err != nil {
-			return err
-		}
+		return sendEmailWithTemplateData(sesClient, dest, sender, templateName, datas[0])
+	}
+	return sendEmail(sesClient, dest, sender, templateName)
+}
 
-		templatedInput := &ses.SendTemplatedEmailInput{
-			Destination:  destination,
-			Source:       source,
-			Template:     aws.String(templateName),
-			TemplateData: templateDatas,
-		}
-		_, err = sesClient.SendTemplatedEmail(templatedInput)
-
-		if err != nil {
-			return err
-		}
-		return nil
+func sendEmailWithTemplateData(sesClient *sessdk.SES, dest *ses.Destination, source, templName string, datas map[string]interface{}) error {
+	templateDatas, err := genTemplateDatas(datas)
+	if err != nil {
+		return err
 	}
 
-	data, err := GetSEStemplate(aws.String(templateName))
+	templatedInput := &ses.SendTemplatedEmailInput{
+		Destination:  dest,
+		Source:       aws.String(source),
+		Template:     aws.String(templName),
+		TemplateData: templateDatas,
+	}
+	_, err = sesClient.SendTemplatedEmail(templatedInput)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func sendEmail(sesClient *sessdk.SES, dest *ses.Destination, source, templName string) error {
+	data, err := getSEStemplate(sesClient, aws.String(templName))
 	if err != nil {
 		return err
 	}
 
 	input := &ses.SendEmailInput{
-		Destination: destination,
+		Destination: dest,
 		Message: &ses.Message{
 			Body: &ses.Body{
 				Html: &ses.Content{
@@ -137,7 +146,7 @@ func SendEmailWithTemplate(sender, recipient, templateName string, datas ...map[
 				Data:    aws.String(*data.Template.SubjectPart),
 			},
 		},
-		Source: source,
+		Source: aws.String(source),
 	}
 
 	_, err = sesClient.SendEmail(input)

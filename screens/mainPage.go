@@ -36,7 +36,7 @@ func NewMainPage(navigator router.Navigator, window fyne.Window) (router.Page, e
 		deteleteBtn,
 	)
 
-	right := makeSendEmailForm()
+	right := makeSendEmailForm(window)
 
 	content := widget.NewHBox(left, mid, right)
 	return &MainView{

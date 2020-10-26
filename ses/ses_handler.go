@@ -9,6 +9,10 @@ import (
 	sessdk "github.com/aws/aws-sdk-go/service/ses"
 )
 
+const (
+	charSet = "UTF-8"
+)
+
 // ListSEStemplates gets email-templates from AWS-SES
 func ListSEStemplates() ([]*sessdk.TemplateMetadata, error) {
 	if AwsSession == nil {
@@ -83,33 +87,64 @@ func GetSEStemplate(name *string) (*sessdk.GetTemplateOutput, error) {
 }
 
 // SendEmailWithTemplate sends a email with html template
-func SendEmailWithTemplate(sender, recipient, templateName string, datas map[string]interface{}) error {
+func SendEmailWithTemplate(sender, recipient, templateName string, datas ...map[string]interface{}) error {
 	sesClient := sessdk.New(AwsSession)
 
-	templatedInput := &ses.SendTemplatedEmailInput{
-		Destination: &ses.Destination{
-			CcAddresses: []*string{},
-			ToAddresses: []*string{
-				aws.String(recipient),
-			},
+	source := aws.String(sender)
+	destination := &ses.Destination{
+		CcAddresses: []*string{},
+		ToAddresses: []*string{
+			aws.String(recipient),
 		},
-		Source:   aws.String(sender),
-		Template: aws.String(templateName),
 	}
 
 	if len(datas) != 0 {
-		templateDatas, genErr := genTemplateDatas(datas)
-		if genErr != nil {
-			return genErr
+		templateDatas, err := genTemplateDatas(datas[0])
+		if err != nil {
+			return err
 		}
-		templatedInput.TemplateData = templateDatas
+
+		templatedInput := &ses.SendTemplatedEmailInput{
+			Destination:  destination,
+			Source:       source,
+			Template:     aws.String(templateName),
+			TemplateData: templateDatas,
+		}
+		_, err = sesClient.SendTemplatedEmail(templatedInput)
+
+		if err != nil {
+			return err
+		}
+		return nil
 	}
 
-	_, err := sesClient.SendTemplatedEmail(templatedInput)
-
+	data, err := GetSEStemplate(aws.String(templateName))
 	if err != nil {
 		return err
 	}
+
+	input := &ses.SendEmailInput{
+		Destination: destination,
+		Message: &ses.Message{
+			Body: &ses.Body{
+				Html: &ses.Content{
+					Charset: aws.String(charSet),
+					Data:    aws.String(*data.Template.HtmlPart),
+				},
+			},
+			Subject: &ses.Content{
+				Charset: aws.String(charSet),
+				Data:    aws.String(*data.Template.SubjectPart),
+			},
+		},
+		Source: source,
+	}
+
+	_, err = sesClient.SendEmail(input)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

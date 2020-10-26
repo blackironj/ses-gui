@@ -23,10 +23,9 @@ func makeSendEmailForm(window fyne.Window) *widget.Box {
 			{Text: "To", Widget: to},
 		},
 		OnSubmit: func() {
-			templateData := make(map[string]interface{})
 			//TODO: if template data exist in email-template, datas must be input from user
 
-			err := ses.SendEmailWithTemplate(from.Text, to.Text, currSelectedTemplate.Text, templateData)
+			err := ses.SendEmailWithTemplate(from.Text, to.Text, currSelectedTemplate.Text)
 			if err != nil {
 				dialog.ShowError(errors.New("Fail to send"), window)
 				fyne.LogError("fail to send a email", err)

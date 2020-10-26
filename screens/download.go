@@ -17,6 +17,10 @@ import (
 	"github.com/mitchellh/go-homedir"
 )
 
+const (
+	downloadDir = "Downloads"
+)
+
 func makeDownloadBtn(window fyne.Window) *widget.Button {
 	downloadwBtn := widget.NewButtonWithIcon("Download a Template", theme.MoveDownIcon(),
 		func() {
@@ -32,15 +36,12 @@ func makeDownloadBtn(window fyne.Window) *widget.Button {
 				return
 			}
 
-			/*TODO: user should be able to enter a download path
-			currently, a downloaded template is saved at home dir
-			*/
-			downPath, err := homedir.Dir()
+			homdir, err := homedir.Dir()
 			if err != nil {
 				fyne.LogError("fail to get a homedir", err)
 				return
 			}
-			downPath = filepath.Join(downPath, *output.Template.TemplateName+".html")
+			downPath := filepath.Join(homdir, downloadDir, *output.Template.TemplateName+".html")
 
 			writeErr := ioutil.WriteFile(downPath, []byte(*output.Template.HtmlPart), 0644)
 			if writeErr != nil {

@@ -30,13 +30,15 @@ func NewMainPage(navigator router.Navigator, window fyne.Window) (router.Page, e
 	downloadBtn := makeDownloadBtn(window)
 	deteleteBtn := makeDeleteBtn(window)
 
-	right := widget.NewVBox(
+	mid := widget.NewVBox(
 		currSelected,
 		downloadBtn,
 		deteleteBtn,
 	)
 
-	content := widget.NewHBox(left, right)
+	right := makeSendEmailForm()
+
+	content := widget.NewHBox(left, mid, right)
 	return &MainView{
 		content,
 	}, nil

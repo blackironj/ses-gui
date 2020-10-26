@@ -2,6 +2,7 @@ package screens
 
 import (
 	"errors"
+	"fmt"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/dialog"
@@ -18,13 +19,24 @@ func makeDeleteBtn(window fyne.Window) *widget.Button {
 				return
 			}
 
-			err := ses.DeleteSEStemplate(&currSelectedTemplate.Text)
-			if err != nil {
-				dialog.ShowError(errors.New("Fail to delete"), window)
-				fyne.LogError("fail to delete", err)
-			} else {
-				updateTemplateList()
+			deletionConfirmCallback := func(response bool) {
+				if !response {
+					return
+				}
+
+				err := ses.DeleteSEStemplate(&currSelectedTemplate.Text)
+				if err != nil {
+					dialog.ShowError(errors.New("Fail to delete"), window)
+					fyne.LogError("fail to delete", err)
+				} else {
+					updateTemplateList()
+				}
 			}
+
+			cnf := dialog.NewConfirm("Confirmation", fmt.Sprintf("Are you sure to delete \"%s\"", currSelectedTemplate.Text), deletionConfirmCallback, window)
+			cnf.SetDismissText("No")
+			cnf.SetConfirmText("Yes")
+			cnf.Show()
 		})
 	return delBtn
 }

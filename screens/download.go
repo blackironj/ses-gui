@@ -17,6 +17,10 @@ import (
 	"github.com/mitchellh/go-homedir"
 )
 
+const (
+	downloadDir = "Downloads"
+)
+
 func makeDownloadBtn(window fyne.Window) *widget.Button {
 	downloadwBtn := widget.NewButtonWithIcon("Download a Template", theme.MoveDownIcon(),
 		func() {
@@ -32,37 +36,36 @@ func makeDownloadBtn(window fyne.Window) *widget.Button {
 				return
 			}
 
-			/*TODO: user should be able to enter a download path
-			currently, a downloaded template is saved at home dir
-			*/
-			downPath, err := homedir.Dir()
+			homdir, err := homedir.Dir()
 			if err != nil {
 				fyne.LogError("fail to get a homedir", err)
 				return
 			}
-			downPath = filepath.Join(downPath, *output.Template.TemplateName+".html")
+			downPath := filepath.Join(homdir, downloadDir)
 
-			writeErr := ioutil.WriteFile(downPath, []byte(*output.Template.HtmlPart), 0644)
+			writeErr := ioutil.WriteFile(
+				filepath.Join(downPath, *output.Template.TemplateName+".html"),
+				[]byte(*output.Template.HtmlPart), 0644)
 			if writeErr != nil {
 				dialog.ShowError(errors.New("Fail to save a template file"), window)
 				fyne.LogError("fail to save a file", writeErr)
 			}
 
-			infoWin := dialog.NewConfirm("Success", fmt.Sprintf("save path : %s", downPath),
+			infoWin := dialog.NewConfirm("Success", fmt.Sprintf("download path : %s", downPath),
 				func(response bool) {
 					if response {
-						openHTML(downPath)
+						openDir(downPath)
 					}
 				}, window)
 
 			infoWin.SetDismissText("Close")
-			infoWin.SetConfirmText("Open HTML")
+			infoWin.SetConfirmText("Open download path")
 			infoWin.Show()
 		})
 	return downloadwBtn
 }
 
-func openHTML(path string) {
+func openDir(path string) {
 	var args []string
 	switch runtime.GOOS {
 	case "darwin":
@@ -75,6 +78,6 @@ func openHTML(path string) {
 	cmd := exec.Command(args[0], args[1:]...)
 	err := cmd.Run()
 	if err != nil {
-		fyne.LogError("open in browser", err)
+		fyne.LogError("open in directory", err)
 	}
 }

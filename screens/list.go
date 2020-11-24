@@ -2,6 +2,7 @@ package screens
 
 import (
 	"fyne.io/fyne"
+	"fyne.io/fyne/container"
 	"fyne.io/fyne/widget"
 
 	"github.com/blackironj/ses-gui/ses"
@@ -10,9 +11,9 @@ import (
 var listTemplate widget.Box
 var currSelectedTemplate widget.Label
 
-func makeTemplateList() *widget.ScrollContainer {
+func makeTemplateList() *container.Scroll {
 	updateTemplateList()
-	return widget.NewVScrollContainer(&listTemplate)
+	return container.NewVScroll(&listTemplate)
 }
 
 func updateTemplateList() {

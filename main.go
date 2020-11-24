@@ -3,6 +3,7 @@ package main
 import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
+	"fyne.io/fyne/theme"
 
 	"github.com/blackironj/ses-gui/router"
 	"github.com/blackironj/ses-gui/screens"
@@ -10,6 +11,8 @@ import (
 
 func main() {
 	myApp := app.New()
+	myApp.Settings().SetTheme(theme.DarkTheme())
+
 	myWindow := myApp.NewWindow("SES-gui")
 
 	var cfg router.RouterConfig

@@ -29,9 +29,8 @@ func updateTemplateList() {
 
 	btns := make([]fyne.CanvasObject, 0, 20)
 	for _, data := range templates {
-		name := *data.Name
-		btn := widget.NewButton(name, func() {
-			currSelectedTemplate.SetText(name)
+		btn := widget.NewButton(*data.Name, func() {
+			currSelectedTemplate.SetText(*data.Name)
 			currSelectedTemplate.Refresh()
 		})
 		btns = append(btns, btn)

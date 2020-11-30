@@ -29,6 +29,7 @@ func makeDeleteBtn(window fyne.Window) *widget.Button {
 					dialog.ShowError(errors.New("Fail to delete"), window)
 					fyne.LogError("fail to delete", err)
 				} else {
+					dialog.ShowInformation("Information", "Success to delete", window)
 					updateTemplateList()
 				}
 			}

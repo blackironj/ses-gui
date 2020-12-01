@@ -30,7 +30,7 @@ func main() {
 	panicIfErr(err)
 
 	myWindow.SetContent(router)
-	myWindow.Resize(fyne.NewSize(640, 480))
+	myWindow.Resize(fyne.NewSize(600, 400))
 	myWindow.ShowAndRun()
 }
 

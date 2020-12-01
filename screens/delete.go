@@ -12,7 +12,7 @@ import (
 )
 
 func makeDeleteBtn(window fyne.Window) *widget.Button {
-	delBtn := widget.NewButtonWithIcon("Delete a Template", theme.ContentClearIcon(),
+	delBtn := widget.NewButtonWithIcon("Delete", theme.ContentClearIcon(),
 		func() {
 			if currSelectedTemplate.Text == "" {
 				dialog.ShowInformation("Warning", "Please select a template first", window)

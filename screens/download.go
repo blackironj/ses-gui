@@ -22,7 +22,7 @@ const (
 )
 
 func makeDownloadBtn(window fyne.Window) *widget.Button {
-	downloadwBtn := widget.NewButtonWithIcon("Download a Template", theme.MoveDownIcon(),
+	downloadwBtn := widget.NewButtonWithIcon("Download", theme.MoveDownIcon(),
 		func() {
 			if currSelectedTemplate.Text == "" {
 				dialog.ShowInformation("Warning", "Please select a template first", window)

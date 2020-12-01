@@ -17,7 +17,7 @@ import (
 )
 
 func makeUploadViewBtn(window fyne.Window) *widget.Button {
-	uploadViewBtn := widget.NewButtonWithIcon("Upload a Template", theme.ContentAddIcon(),
+	uploadViewBtn := widget.NewButtonWithIcon("Upload", theme.ContentAddIcon(),
 		func() {
 			templateName := widget.NewEntry()
 			subject := widget.NewEntry()

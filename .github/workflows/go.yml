@@ -16,7 +16,9 @@ jobs:
 
     - name: Install dependency
       if: startsWith(matrix.platform, 'ubuntu')
-      run: sudo apt-get install libgl1-mesa-dev xorg-dev
+      run: |
+        sudo apt-get update
+        sudo apt-get install libgl1-mesa-dev xorg-dev
 
     - name: Setup Go
       uses: actions/setup-go@v1

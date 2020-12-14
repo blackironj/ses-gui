@@ -107,6 +107,6 @@ modules.xml
 main
 main.exe
 ses-gui.exe
-ses-guid
+ses-gui
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,jetbrains+all

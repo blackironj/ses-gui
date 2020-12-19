@@ -14,8 +14,10 @@ import (
 	"github.com/blackironj/ses-gui/ses"
 )
 
-type orderLabelWithId struct {
+type labelAndEntryWithId struct {
 	orderLabel *widget.Label
+	keyEntry   *widget.Entry
+	valEntry   *widget.Entry
 	id         string
 }
 
@@ -45,23 +47,23 @@ func makeSendEmailForm(window fyne.Window) *widget.Box {
 	}
 
 	templateItemBox := widget.NewVBox()
-	orderLabels := []orderLabelWithId{}
+	labelAndEntry := []labelAndEntryWithId{}
 
 	return widget.NewVBox(
 		widget.NewLabelWithStyle("Send a email", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		form,
-		makeAddTemplateDataBtnWithEntry(templateItemBox, orderLabels),
+		makeAddTemplateDataBtnWithEntry(templateItemBox, labelAndEntry),
 		templateItemBox,
 	)
 }
 
-func updateNumLabels(numberLabels []orderLabelWithId) {
+func updateNumLabels(numberLabels []labelAndEntryWithId) {
 	for i := range numberLabels {
 		numberLabels[i].orderLabel.Text = strconv.Itoa(i+1) + ". "
 	}
 }
 
-func makeAddTemplateDataBtnWithEntry(templateItemBox *widget.Box, orderLabels []orderLabelWithId) *widget.Button {
+func makeAddTemplateDataBtnWithEntry(templateItemBox *widget.Box, orderlabelAndDataEntry []labelAndEntryWithId) *widget.Button {
 	addTemplateDataBtnWithEntry := &widget.Button{
 		Alignment: widget.ButtonAlignLeading,
 		Icon:      theme.ContentAddIcon(),
@@ -70,20 +72,27 @@ func makeAddTemplateDataBtnWithEntry(templateItemBox *widget.Box, orderLabels []
 			u1 := uuid.NewV4()
 			label := widget.NewLabel("")
 
-			orderLabels = append(orderLabels, orderLabelWithId{
+			keyData := widget.NewEntry()
+			keyData.SetPlaceHolder("key")
+
+			valData := widget.NewEntry()
+			valData.SetPlaceHolder("val")
+
+			orderlabelAndDataEntry = append(orderlabelAndDataEntry, labelAndEntryWithId{
 				id:         u1.String(),
+				keyEntry:   keyData,
+				valEntry:   valData,
 				orderLabel: label,
 			})
 
-			entry := widget.NewEntry()
 			delBtn := &widget.Button{
 				Icon: theme.ContentRemoveIcon(),
 				OnTapped: func() {
 					id := u1.String()
-					for i, v := range orderLabels {
+					for i, v := range orderlabelAndDataEntry {
 						if id == v.id {
-							orderLabels = append(orderLabels[:i], orderLabels[i+1:]...)
-							updateNumLabels(orderLabels)
+							orderlabelAndDataEntry = append(orderlabelAndDataEntry[:i], orderlabelAndDataEntry[i+1:]...)
+							updateNumLabels(orderlabelAndDataEntry)
 
 							templateItemBox.Children = append(templateItemBox.Children[:i], templateItemBox.Children[i+1:]...)
 							break
@@ -93,8 +102,8 @@ func makeAddTemplateDataBtnWithEntry(templateItemBox *widget.Box, orderLabels []
 				},
 			}
 
-			newItem := widget.NewHBox(label, entry, delBtn)
-			updateNumLabels(orderLabels)
+			newItem := widget.NewHBox(label, keyData, valData, delBtn)
+			updateNumLabels(orderlabelAndDataEntry)
 
 			templateItemBox.Append(newItem)
 		},

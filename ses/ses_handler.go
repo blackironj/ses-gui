@@ -90,7 +90,7 @@ func getSEStemplate(sesClient *sessdk.SES, name *string) (*sessdk.GetTemplateOut
 }
 
 // SendEmailWithTemplate sends a email with html template
-func SendEmailWithTemplate(sender, recipient, templateName string, datas ...map[string]interface{}) error {
+func SendEmailWithTemplate(sender, recipient, templateName string, datas map[string]interface{}) error {
 	sesClient := sessdk.New(AwsSession)
 
 	dest := &ses.Destination{
@@ -101,7 +101,7 @@ func SendEmailWithTemplate(sender, recipient, templateName string, datas ...map[
 	}
 
 	if len(datas) != 0 {
-		return sendEmailWithTemplateData(sesClient, dest, sender, templateName, datas[0])
+		return sendEmailWithTemplateData(sesClient, dest, sender, templateName, datas)
 	}
 	return sendEmail(sesClient, dest, sender, templateName)
 }

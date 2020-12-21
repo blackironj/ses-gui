@@ -6,13 +6,37 @@
 
 This is a GUI tool for managing aws-ses email template easily
 
-Currently, AWS-SES does not provide GUI editor yet.  So you can use AWS-CLI tool to manage email-template. ([AWS-CLI-Ref](https://awscli.amazonaws.com/v2/documentation/api/latest/index.html))
+> Currently, AWS-SES does not provide GUI editor yet. So you can use [AWS-CLI](https://awscli.amazonaws.com/v2/documentation/api/latest/index.html) tool to manage email-template instead of this tool. 
 
-## TODO
-- [x] Login with a aws access key
-- [x] upload a email template
-- [x] download a email template
-- [x] show list of templates
-- [x] delete a template
-- [ ] send a email with selected template
+## Demo
+
+![ex_img](./img/ses-gui-demo.jpg)
+
+## Build
+
+> I do not test it on linux and macOS yet.
+
+### Prerequisites
+
+```
+golang 1.15+
+```
+
+### Windows
+
+```bash
+go build -o ses-gui.exe -ldflags="-H windowsgui"
+```
+
+## Feature
+
+- [x] Login with an aws access key
+- [x] Upload an email template
+- [x] Download an email template
+- [x] Show list of templates
+- [x] Delete a template
+- [x] Send an email with selected template
+
+### TODO
+
 - [ ] enhance UI / UX

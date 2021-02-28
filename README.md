@@ -4,7 +4,7 @@
   <a href="https://github.com/blackironj/ses-gui/actions"><img alt="GitHub Actions status" src="https://github.com/actions/setup-go/workflows/build-test/badge.svg"></a>
 </p>
 
-This is a GUI tool for managing aws-ses email template easily
+This is a GUI tool for uploading, downloading, deleting AWS-SES Email template easily. And also you can test sending email with uploaded template using this tool 
 
 > Currently, AWS-SES does not provide GUI editor yet. So you can use [AWS-CLI](https://awscli.amazonaws.com/v2/documentation/api/latest/index.html) tool to manage email-template instead of this tool. 
 

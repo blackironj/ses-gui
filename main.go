@@ -1,41 +1,29 @@
 package main
 
 import (
-	"fyne.io/fyne"
-	"fyne.io/fyne/app"
-	"fyne.io/fyne/theme"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/widget"
 
-	"github.com/blackironj/ses-gui/router"
-	"github.com/blackironj/ses-gui/screens"
+	"github.com/blackironj/ses-gui/screen"
 )
 
 func main() {
-	myApp := app.New()
-	myApp.Settings().SetTheme(theme.DarkTheme())
+	a := app.NewWithID("xyz.blackironj.ses-gui")
+	w := a.NewWindow("SES-GUI")
 
-	myWindow := myApp.NewWindow("SES-gui")
+	hello := widget.NewLabel("Hello SES GUI!")
+	w.SetContent(container.NewVBox(
+		hello,
+		widget.NewButton("Hi!", func() {
+			hello.SetText("Welcome :)")
+		}),
+	))
 
-	var cfg router.RouterConfig
-	cfg.Route(router.LoginPath, func(navigator router.Navigator, ctx interface{}) (router.Page, error) {
-		return screens.NewLoginPage(navigator)
-	})
+	screen.AskForAccessToAWS(w, a)
 
-	cfg.Route(router.MainPath, func(navigator router.Navigator, ctx interface{}) (router.Page, error) {
-		return screens.NewMainPage(navigator, myWindow)
-	})
+	w.Resize(fyne.NewSize(600, 400))
 
-	cfg.InitialPath(router.LoginPath)
-
-	router, err := cfg.Build()
-	panicIfErr(err)
-
-	myWindow.SetContent(router)
-	myWindow.Resize(fyne.NewSize(600, 400))
-	myWindow.ShowAndRun()
-}
-
-func panicIfErr(err error) {
-	if err != nil {
-		panic(err)
-	}
+	w.ShowAndRun()
 }

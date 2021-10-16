@@ -1,8 +1,6 @@
 package component
 
 import (
-	"log"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -28,20 +26,26 @@ func MakeListTab(refreshReqChan chan<- struct{}) fyne.CanvasObject {
 
 			btns := item.(*fyne.Container).Objects[1].(*fyne.Container).Objects
 			btns[0].(*widget.Button).OnTapped = func() {
-				log.Println("download button is clicked")
+				//TODO: download a email template from S3
 			}
 			btns[1].(*widget.Button).OnTapped = func() {
-				log.Println("delete button is clicked : ", id)
+				//TODO: delete a email template in S3
 				repo.Instance().Delete(id)
 				refreshReqChan <- struct{}{}
 			}
 		})
 	list.OnSelected = func(id widget.ListItemID) {
-		log.Println("selected item : ", id)
 	}
 	list.OnUnselected = func(id widget.ListItemID) {
-		log.Println("unselected item : ", id)
 	}
-
 	return list
+}
+
+func MakeUploadBtn(refreshReqChan chan<- struct{}) *widget.Button {
+	return widget.NewButtonWithIcon("Upload", theme.ContentAddIcon(), func() {
+		/*TODO: upload a Email template to S3
+		implement `searching file` UI
+		*/
+		refreshReqChan <- struct{}{}
+	})
 }

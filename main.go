@@ -12,7 +12,6 @@ func main() {
 	w := a.NewWindow("SES-GUI")
 
 	w.SetContent(screen.MainView())
-
 	screen.AskForAccessToAWS(w, a)
 
 	w.Resize(fyne.NewSize(600, 400))

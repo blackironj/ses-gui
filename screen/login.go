@@ -9,6 +9,8 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 
+	"github.com/blackironj/ses-gui/repo"
+	"github.com/blackironj/ses-gui/screen/channel"
 	"github.com/blackironj/ses-gui/ses"
 )
 
@@ -61,14 +63,19 @@ func accessToAWS(accesskey, secretkey, region string, w fyne.Window, a fyne.App)
 		return
 	}
 
-	_, err = ses.ListSEStemplates()
+	ses.AwsSession = awsSess
+
+	templateList, err := ses.ListSEStemplates()
 	if err != nil {
 		log.Println(err)
 		showError(errors.New("cannot access to template list, please check your keys"), w, a)
 		return
 	}
-	ses.AwsSession = awsSess
-	//TODO: save template list metadata
+
+	for _, template := range templateList {
+		repo.Instance().Append(*template.Name)
+	}
+	channel.RefreshReq <- struct{}{}
 }
 
 func showError(err error, w fyne.Window, a fyne.App) {

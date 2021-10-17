@@ -7,9 +7,10 @@ import (
 	"fyne.io/fyne/v2/widget"
 
 	"github.com/blackironj/ses-gui/repo"
+	"github.com/blackironj/ses-gui/screen/channel"
 )
 
-func MakeListTab(refreshReqChan chan<- struct{}) fyne.CanvasObject {
+func MakeListTab() fyne.CanvasObject {
 	list := widget.NewList(
 		func() int {
 			return repo.Instance().Len()
@@ -31,7 +32,7 @@ func MakeListTab(refreshReqChan chan<- struct{}) fyne.CanvasObject {
 			btns[1].(*widget.Button).OnTapped = func() {
 				//TODO: delete a email template in S3
 				repo.Instance().Delete(id)
-				refreshReqChan <- struct{}{}
+				channel.RefreshReq <- struct{}{}
 			}
 		})
 	list.OnSelected = func(id widget.ListItemID) {
@@ -41,11 +42,11 @@ func MakeListTab(refreshReqChan chan<- struct{}) fyne.CanvasObject {
 	return list
 }
 
-func MakeUploadBtn(refreshReqChan chan<- struct{}) *widget.Button {
+func MakeUploadBtn() *widget.Button {
 	return widget.NewButtonWithIcon("Upload", theme.ContentAddIcon(), func() {
 		/*TODO: upload a Email template to S3
 		implement `searching file` UI
 		*/
-		refreshReqChan <- struct{}{}
+		channel.RefreshReq <- struct{}{}
 	})
 }

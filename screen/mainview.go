@@ -8,8 +8,8 @@ import (
 	"github.com/blackironj/ses-gui/screen/component"
 )
 
-func MainView() fyne.CanvasObject {
-	listTab := component.MakeListTab()
+func MainView(w fyne.Window) fyne.CanvasObject {
+	listTab := component.MakeListTab(w)
 	uploadBtn := component.MakeUploadBtn()
 
 	go channel.RefreshTemplateList(listTab)

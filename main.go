@@ -11,7 +11,8 @@ func main() {
 	a := app.NewWithID("xyz.blackironj.ses-gui")
 	w := a.NewWindow("SES-GUI")
 
-	w.SetContent(screen.MainView())
+	mainView := screen.MainView(w)
+	w.SetContent(mainView)
 	screen.AskForAccessToAWS(w, a)
 
 	w.Resize(fyne.NewSize(600, 400))

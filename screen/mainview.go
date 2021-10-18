@@ -9,10 +9,16 @@ import (
 )
 
 func MainView(w fyne.Window) fyne.CanvasObject {
-	listTab := component.MakeListTab(w)
-	uploadBtn := component.MakeUploadBtn(w)
+	templList := component.MakeTemplateList(w)
+	uploadTemplBtn := component.MakeUploadBtn(w)
 
-	go channel.RefreshTemplateList(listTab)
+	emailVarList := component.MakeEmailVarList(w)
+	addEmailVarBtn := component.MakeAddEmailVarBtn(w, emailVarList)
 
-	return container.NewBorder(nil, uploadBtn, nil, nil, listTab)
+	go channel.RefreshView(templList, emailVarList)
+
+	leftSide := container.NewBorder(nil, uploadTemplBtn, nil, nil, templList)
+	rightSide := container.NewBorder(addEmailVarBtn, nil, nil, nil, emailVarList)
+
+	return container.NewHSplit(leftSide, rightSide)
 }

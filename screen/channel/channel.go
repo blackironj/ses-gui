@@ -2,11 +2,18 @@ package channel
 
 import "fyne.io/fyne/v2"
 
-var RefreshReq = make(chan struct{}, 1)
+var (
+	RefreshTemplateListReq = make(chan struct{}, 1)
+	RefreshEmailVarListReq = make(chan struct{}, 1)
+)
 
-func RefreshTemplateList(listCanvas fyne.CanvasObject) {
+func RefreshView(templListView, emailVarListView fyne.CanvasObject) {
 	for {
-		<-RefreshReq
-		listCanvas.Refresh()
+		select {
+		case <-RefreshTemplateListReq:
+			templListView.Refresh()
+		case <-RefreshEmailVarListReq:
+			emailVarListView.Refresh()
+		}
 	}
 }

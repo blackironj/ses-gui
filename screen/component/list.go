@@ -39,18 +39,16 @@ func MakeListTab(w fyne.Window) fyne.CanvasObject {
 			)
 			return container.NewBorder(nil, nil, nil, buttonBox, widget.NewLabel("template name"))
 		},
-		func(id widget.ListItemID, item fyne.CanvasObject) {
-			templateName := repo.Instance().Get(id)
+		func(itemID widget.ListItemID, item fyne.CanvasObject) {
+			templateName := repo.Instance().Get(itemID)
 			item.(*fyne.Container).Objects[0].(*widget.Label).SetText(templateName)
 
 			btns := item.(*fyne.Container).Objects[1].(*fyne.Container).Objects
 			btns[0].(*widget.Button).OnTapped = func() {
-				downloadToLocal(w, &templateName)
+				downloadToLocal(w, templateName)
 			}
 			btns[1].(*widget.Button).OnTapped = func() {
-				//TODO: delete a email template in S3
-				repo.Instance().Delete(id)
-				channel.RefreshReq <- struct{}{}
+				deleteFromS3(w, templateName, itemID)
 			}
 		})
 	list.OnSelected = func(id widget.ListItemID) {
@@ -60,8 +58,33 @@ func MakeListTab(w fyne.Window) fyne.CanvasObject {
 	return list
 }
 
-func downloadToLocal(w fyne.Window, templateName *string) {
-	output, err := ses.GetSEStemplate(templateName)
+func deleteFromS3(w fyne.Window, templateName string, itemID int) {
+	deletionConfirmCallback := func(response bool) {
+		if !response {
+			return
+		}
+
+		err := ses.DeleteSEStemplate(&templateName)
+		if err != nil {
+			dialog.ShowError(errors.New("fail to delete"), w)
+			log.Println("fail to delete a template: ", err)
+			return
+		}
+		repo.Instance().Delete(itemID)
+		channel.RefreshReq <- struct{}{}
+		dialog.ShowInformation("Information", "success to delete", w)
+	}
+
+	cnf := dialog.NewConfirm("Confirmation",
+		fmt.Sprintf("Are you sure to delete \"%s\"", templateName),
+		deletionConfirmCallback, w)
+	cnf.SetDismissText("No")
+	cnf.SetConfirmText("Yes")
+	cnf.Show()
+}
+
+func downloadToLocal(w fyne.Window, templateName string) {
+	output, err := ses.GetSEStemplate(&templateName)
 	if err != nil {
 		dialog.ShowError(errors.New("fail to download"), w)
 		log.Println("fail to get a template: ", err)

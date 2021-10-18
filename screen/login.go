@@ -77,9 +77,9 @@ func accessToAWS(accesskey, secretkey, region string, w fyne.Window, a fyne.App)
 	}
 
 	for _, template := range templateList {
-		repo.Instance().Append(*template.Name)
+		repo.TemplateList().Append(*template.Name)
 	}
-	channel.RefreshReq <- struct{}{}
+	channel.RefreshTemplateListReq <- struct{}{}
 }
 
 func showError(err error, w fyne.Window, a fyne.App) {

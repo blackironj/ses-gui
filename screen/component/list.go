@@ -27,10 +27,10 @@ const (
 	_downloadDir = "Downloads"
 )
 
-func MakeListTab(w fyne.Window) fyne.CanvasObject {
+func MakeTemplateList(w fyne.Window) fyne.CanvasObject {
 	list := widget.NewList(
 		func() int {
-			return repo.Instance().Len()
+			return repo.TemplateList().Len()
 		},
 		func() fyne.CanvasObject {
 			buttonBox := container.NewHBox(
@@ -40,7 +40,7 @@ func MakeListTab(w fyne.Window) fyne.CanvasObject {
 			return container.NewBorder(nil, nil, nil, buttonBox, widget.NewLabel("template name"))
 		},
 		func(itemID widget.ListItemID, item fyne.CanvasObject) {
-			templateName := repo.Instance().Get(itemID)
+			templateName := repo.TemplateList().Get(itemID)
 			item.(*fyne.Container).Objects[0].(*widget.Label).SetText(templateName)
 
 			btns := item.(*fyne.Container).Objects[1].(*fyne.Container).Objects
@@ -50,7 +50,8 @@ func MakeListTab(w fyne.Window) fyne.CanvasObject {
 			btns[1].(*widget.Button).OnTapped = func() {
 				deleteFromS3(w, templateName, itemID)
 			}
-		})
+		},
+	)
 	list.OnSelected = func(id widget.ListItemID) {
 	}
 	list.OnUnselected = func(id widget.ListItemID) {
@@ -70,8 +71,8 @@ func deleteFromS3(w fyne.Window, templateName string, itemID int) {
 			log.Println("fail to delete a template: ", err)
 			return
 		}
-		repo.Instance().Delete(itemID)
-		channel.RefreshReq <- struct{}{}
+		repo.TemplateList().Delete(itemID)
+		channel.RefreshTemplateListReq <- struct{}{}
 		dialog.ShowInformation("Information", "success to delete", w)
 	}
 
@@ -182,8 +183,8 @@ func MakeUploadBtn(w fyne.Window) *widget.Button {
 					return
 				}
 				dialog.ShowInformation("Information", "Success to upload", w)
-				repo.Instance().Append(templateName.Text)
-				channel.RefreshReq <- struct{}{}
+				repo.TemplateList().Append(templateName.Text)
+				channel.RefreshTemplateListReq <- struct{}{}
 			}, w)
 
 		uploadForm.Resize(fyne.NewSize(400, 250))

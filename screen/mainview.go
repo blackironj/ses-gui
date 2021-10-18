@@ -18,7 +18,7 @@ func MainView(w fyne.Window) fyne.CanvasObject {
 	go channel.RefreshView(templList, emailVarList)
 
 	leftSide := container.NewBorder(nil, uploadTemplBtn, nil, nil, templList)
-	rightSide := container.NewBorder(addEmailVarBtn, nil, nil, nil, emailVarList)
+	rightSide := container.NewBorder(addEmailVarBtn, nil, nil, nil, container.NewVScroll(emailVarList))
 
 	return container.NewHSplit(leftSide, rightSide)
 }

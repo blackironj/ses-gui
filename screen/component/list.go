@@ -142,7 +142,7 @@ func MakeUploadBtn(w fyne.Window) *widget.Button {
 
 		filePath := widget.NewEntry()
 		findPathBtn := makeFindHTMLbtn(w, filePath)
-		path := container.NewHBox(filePath, findPathBtn)
+		path := container.NewBorder(nil, nil, nil, findPathBtn, filePath)
 
 		contents := widget.NewForm(
 			widget.NewFormItem("Template name", templateName),
@@ -150,7 +150,7 @@ func MakeUploadBtn(w fyne.Window) *widget.Button {
 			widget.NewFormItem("Path", path),
 		)
 
-		dialog.ShowCustomConfirm("Upload a Template", "upload", "cancel", contents,
+		uploadForm := dialog.NewCustomConfirm("Upload a Template", "upload", "cancel", contents,
 			func(ok bool) {
 				if !ok {
 					return
@@ -185,6 +185,9 @@ func MakeUploadBtn(w fyne.Window) *widget.Button {
 				repo.Instance().Append(templateName.Text)
 				channel.RefreshReq <- struct{}{}
 			}, w)
+
+		uploadForm.Resize(fyne.NewSize(400, 250))
+		uploadForm.Show()
 	})
 }
 

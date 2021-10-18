@@ -10,7 +10,7 @@ import (
 
 func MainView(w fyne.Window) fyne.CanvasObject {
 	listTab := component.MakeListTab(w)
-	uploadBtn := component.MakeUploadBtn()
+	uploadBtn := component.MakeUploadBtn(w)
 
 	go channel.RefreshTemplateList(listTab)
 

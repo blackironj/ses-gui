@@ -12,8 +12,10 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	sessdk "github.com/aws/aws-sdk-go/service/ses"
 	"github.com/mitchellh/go-homedir"
 
 	"github.com/blackironj/ses-gui/repo"
@@ -110,11 +112,96 @@ func openDir(path string) {
 	}
 }
 
-func MakeUploadBtn() *widget.Button {
+func MakeUploadBtn(w fyne.Window) *widget.Button {
 	return widget.NewButtonWithIcon("Upload", theme.ContentAddIcon(), func() {
-		/*TODO: upload a Email template to S3
-		implement `searching file` UI
-		*/
-		channel.RefreshReq <- struct{}{}
+		templateName := widget.NewEntry()
+		subject := widget.NewEntry()
+
+		filePath := widget.NewEntry()
+		findPathBtn := makeFindHTMLbtn(w, filePath)
+		path := container.NewHBox(filePath, findPathBtn)
+
+		contents := widget.NewForm(
+			widget.NewFormItem("Template name", templateName),
+			widget.NewFormItem("Subject", subject),
+			widget.NewFormItem("Path", path),
+		)
+
+		dialog.ShowCustomConfirm("Upload a Template", "upload", "cancel", contents,
+			func(ok bool) {
+				if !ok {
+					return
+				}
+
+				if filepath.Ext(filePath.Text) != ".html" {
+					dialog.ShowError(errors.New("please load a html file"), w)
+					return
+				}
+
+				htmlFile, readFileErr := ioutil.ReadFile(filePath.Text)
+				if readFileErr != nil {
+					log.Println("failed to read a file: ", readFileErr)
+					dialog.ShowError(errors.New("failed to read a file"), w)
+					return
+				}
+
+				contents := string(htmlFile)
+				inputTemplate := &sessdk.Template{
+					HtmlPart:     &contents,
+					TemplateName: &templateName.Text,
+					SubjectPart:  &subject.Text,
+				}
+
+				uploadErr := ses.UploadSEStemplate(inputTemplate)
+				if uploadErr != nil {
+					log.Println("fail to upload: ", uploadErr)
+					dialog.ShowError(errors.New("fail to upload"), w)
+					return
+				}
+				dialog.ShowInformation("Information", "Success to upload", w)
+				repo.Instance().Append(templateName.Text)
+				channel.RefreshReq <- struct{}{}
+			}, w)
 	})
+}
+
+func makeFindHTMLbtn(w fyne.Window, filePath *widget.Entry) *widget.Button {
+	findBtn := widget.NewButtonWithIcon("find", theme.SearchIcon(),
+		func() {
+			fd := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
+				if err == nil && reader == nil {
+					return
+				}
+				if err != nil {
+					dialog.ShowError(err, w)
+					return
+				}
+				path := getHTMLpath(reader)
+				filePath.SetText(path)
+			}, w)
+
+			fd.SetFilter(storage.NewExtensionFileFilter([]string{".html"}))
+			fd.Show()
+		},
+	)
+	return findBtn
+}
+
+func getHTMLpath(f fyne.URIReadCloser) (path string) {
+	if f == nil {
+		return
+	}
+
+	ext := f.URI().Extension()
+	if ext == ".html" {
+		path = f.URI().String()
+		scheme := f.URI().Scheme() + "://"
+
+		return path[len(scheme):]
+	}
+	err := f.Close()
+	if err != nil {
+		log.Println("failed to close stream: ", err)
+	}
+	return
 }

@@ -4,32 +4,32 @@ import (
 	"sync"
 )
 
-type repository struct {
+type templateListRepo struct {
 	templateNameList []string
 	rwMu             sync.RWMutex
 }
 
 var (
-	once sync.Once
-	r    *repository
+	templateListOnce sync.Once
+	templList        *templateListRepo
 )
 
-func Instance() *repository {
-	once.Do(func() {
-		r = &repository{
+func TemplateList() *templateListRepo {
+	templateListOnce.Do(func() {
+		templList = &templateListRepo{
 			templateNameList: make([]string, 0, 30),
 		}
 	})
-	return r
+	return templList
 }
 
-func (thiz *repository) Append(newTemplateName string) {
+func (thiz *templateListRepo) Append(newTemplateName string) {
 	thiz.rwMu.Lock()
 	defer thiz.rwMu.Unlock()
 	thiz.templateNameList = append(thiz.templateNameList, newTemplateName)
 }
 
-func (thiz *repository) Delete(idx int) {
+func (thiz *templateListRepo) Delete(idx int) {
 	thiz.rwMu.Lock()
 	defer thiz.rwMu.Unlock()
 	if len(thiz.templateNameList) == 1 {
@@ -39,13 +39,13 @@ func (thiz *repository) Delete(idx int) {
 	thiz.templateNameList = append(thiz.templateNameList[:idx], thiz.templateNameList[idx+1:]...)
 }
 
-func (thiz *repository) Get(idx int) string {
+func (thiz *templateListRepo) Get(idx int) string {
 	thiz.rwMu.RLock()
 	defer thiz.rwMu.RUnlock()
 	return thiz.templateNameList[idx]
 }
 
-func (thiz *repository) List() []string {
+func (thiz *templateListRepo) List() []string {
 	thiz.rwMu.RLock()
 	defer thiz.rwMu.RUnlock()
 	dest := make([]string, len(thiz.templateNameList))
@@ -53,7 +53,7 @@ func (thiz *repository) List() []string {
 	return dest
 }
 
-func (thiz *repository) Len() int {
+func (thiz *templateListRepo) Len() int {
 	thiz.rwMu.RLock()
 	defer thiz.rwMu.RUnlock()
 	return len(thiz.templateNameList)

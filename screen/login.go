@@ -35,7 +35,7 @@ func AskForAccessToAWS(w fyne.Window, a fyne.App) {
 	secretkey := widget.NewPasswordEntry()
 	regions := widget.NewSelectEntry(regionList)
 
-	dialog.ShowForm("Access to AWS", "Login", "Clear",
+	loginForm := dialog.NewForm("Access to AWS", "Login", "Clear",
 		[]*widget.FormItem{
 			widget.NewFormItem("Access Key", accesskey),
 			widget.NewFormItem("Secret Key", secretkey),
@@ -48,6 +48,10 @@ func AskForAccessToAWS(w fyne.Window, a fyne.App) {
 			}
 			accessToAWS(accesskey.Text, secretkey.Text, regions.Text, w, a)
 		}, w)
+
+	loginForm.Resize(fyne.NewSize(400, 250))
+	loginForm.Show()
+
 	if accesskey.Text == "" {
 		w.Canvas().Focus(accesskey)
 	} else {

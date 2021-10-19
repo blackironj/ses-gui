@@ -28,7 +28,7 @@ func MakeAddEmailVarBtn(w fyne.Window, emailVarListBox *fyne.Container) *widget.
 
 			delBtn := makeDelEmailVarBtn(id, emailVarListBox)
 
-			emailVarListBox.Add(container.NewBorder(nil, nil, nil, delBtn, entryBox))
+			emailVarListBox.Add(container.NewBorder(nil, nil, widget.NewIcon(theme.ConfirmIcon()), delBtn, entryBox))
 			repo.EmailVarList().Append(id, keyEntry, valEntry)
 
 			channel.RefreshEmailVarListReq <- struct{}{}

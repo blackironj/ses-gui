@@ -2,11 +2,15 @@ package repo
 
 import (
 	"sync"
+
+	"go.uber.org/atomic"
 )
 
 type templateListRepo struct {
 	templateNameList []string
 	rwMu             sync.RWMutex
+
+	currSelectedTemplateName atomic.String
 }
 
 var (
@@ -57,4 +61,12 @@ func (thiz *templateListRepo) Len() int {
 	thiz.rwMu.RLock()
 	defer thiz.rwMu.RUnlock()
 	return len(thiz.templateNameList)
+}
+
+func (thiz *templateListRepo) SetCurrSelectedTemplate(name string) {
+	thiz.currSelectedTemplateName.Store(name)
+}
+
+func (thiz *templateListRepo) CurrSelectedTemplate() string {
+	return thiz.currSelectedTemplateName.Load()
 }

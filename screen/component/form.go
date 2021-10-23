@@ -11,6 +11,14 @@ import (
 	"github.com/blackironj/ses-gui/screen/channel"
 )
 
+func MakeSelectedTemplateIndicator(currTemplate *widget.Label) *fyne.Container {
+	return container.NewHBox(
+		widget.NewIcon(theme.DocumentIcon()),
+		widget.NewLabelWithStyle("Selected :", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		currTemplate,
+	)
+}
+
 func MakeSendEmailTitle() *fyne.Container {
 	return container.NewCenter(
 		container.NewHBox(

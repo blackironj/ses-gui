@@ -27,7 +27,7 @@ const (
 	_downloadDir = "Downloads"
 )
 
-func MakeTemplateList(w fyne.Window) fyne.CanvasObject {
+func MakeTemplateList(w fyne.Window) *widget.List {
 	list := widget.NewList(
 		func() int {
 			return repo.TemplateList().Len()
@@ -53,8 +53,9 @@ func MakeTemplateList(w fyne.Window) fyne.CanvasObject {
 		},
 	)
 	list.OnSelected = func(id widget.ListItemID) {
-	}
-	list.OnUnselected = func(id widget.ListItemID) {
+		templName := repo.TemplateList().Get(id)
+		repo.TemplateList().SetCurrSelectedTemplate(templName)
+		channel.RefreshCurrSelectedLabelReq <- struct{}{}
 	}
 	return list
 }

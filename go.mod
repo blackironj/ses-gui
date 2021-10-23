@@ -7,4 +7,5 @@ require (
 	github.com/aws/aws-sdk-go v1.35.34
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/satori/go.uuid v1.2.0
+	go.uber.org/atomic v1.9.0
 )

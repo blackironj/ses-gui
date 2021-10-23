@@ -11,7 +11,32 @@ import (
 	"github.com/blackironj/ses-gui/screen/channel"
 )
 
-func MakeEmailVarList(w fyne.Window) *fyne.Container {
+func MakeSendEmailTitle() *fyne.Container {
+	return container.NewCenter(
+		container.NewHBox(
+			widget.NewIcon(theme.MailSendIcon()),
+			widget.NewLabelWithStyle("Send a email", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		),
+	)
+}
+
+func MakeSendEmailForm(w fyne.Window) *widget.Form {
+	from, to := widget.NewEntry(), widget.NewEntry()
+	from.SetPlaceHolder("from@example.com")
+	to.SetPlaceHolder("to@example.com")
+
+	return &widget.Form{
+		Items: []*widget.FormItem{
+			{Text: "From", Widget: from},
+			{Text: "To", Widget: to},
+		},
+		OnSubmit: func() {
+			//TODO: send a email with template using AWS-SES
+		},
+	}
+}
+
+func MakeEmailVarBox() *fyne.Container {
 	return container.NewVBox()
 }
 

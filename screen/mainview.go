@@ -12,13 +12,20 @@ func MainView(w fyne.Window) fyne.CanvasObject {
 	templList := component.MakeTemplateList(w)
 	uploadTemplBtn := component.MakeUploadBtn(w)
 
-	emailVarList := component.MakeEmailVarList(w)
-	addEmailVarBtn := component.MakeAddEmailVarBtn(w, emailVarList)
-
-	go channel.RefreshView(templList, emailVarList)
-
 	leftSide := container.NewBorder(nil, uploadTemplBtn, nil, nil, templList)
-	rightSide := container.NewBorder(addEmailVarBtn, nil, nil, nil, container.NewVScroll(emailVarList))
+
+	emailSendFormTitle := component.MakeSendEmailTitle()
+	emailSendForm := component.MakeSendEmailForm(w)
+	emailVarBox := component.MakeEmailVarBox()
+	addEmailVarBtn := component.MakeAddEmailVarBtn(w, emailVarBox)
+	addEmailVarView := container.NewBorder(addEmailVarBtn, nil, nil, nil, container.NewVScroll(emailVarBox))
+
+	rightSide := container.NewVSplit(
+		container.NewVBox(emailSendFormTitle, emailSendForm),
+		addEmailVarView,
+	)
+
+	go channel.RefreshView(templList, emailVarBox)
 
 	return container.NewHSplit(leftSide, rightSide)
 }

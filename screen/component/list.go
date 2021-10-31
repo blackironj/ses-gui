@@ -27,6 +27,15 @@ const (
 	_downloadDir = "Downloads"
 )
 
+func MakeTemplateListTitle() *fyne.Container {
+	return container.NewCenter(
+		container.NewHBox(
+			widget.NewIcon(theme.DocumentIcon()),
+			widget.NewLabelWithStyle("Template List", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		),
+	)
+}
+
 func MakeTemplateList(w fyne.Window) *widget.List {
 	list := widget.NewList(
 		func() int {

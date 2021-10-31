@@ -54,10 +54,10 @@ func (thiz *emailVarListRepo) Len() int {
 	return len(thiz.variableList)
 }
 
-func (thiz *emailVarListRepo) Map() map[string]string {
+func (thiz *emailVarListRepo) Map() map[string]interface{} {
 	thiz.rwMu.RLock()
 	defer thiz.rwMu.RUnlock()
-	dest := make(map[string]string, len(thiz.variableList))
+	dest := make(map[string]interface{}, len(thiz.variableList))
 	for _, data := range thiz.variableList {
 		dest[data.KeyEntry.Text] = data.ValEntry.Text
 	}

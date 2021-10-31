@@ -1,14 +1,20 @@
 package component
 
 import (
+	"errors"
+	"fmt"
+	"log"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/blackironj/ses-gui/repo"
 	"github.com/blackironj/ses-gui/screen/channel"
+	"github.com/blackironj/ses-gui/ses"
 )
 
 func MakeSelectedTemplateIndicator(currTemplate *widget.Label) *fyne.Container {
@@ -39,7 +45,17 @@ func MakeSendEmailForm(w fyne.Window) *widget.Form {
 			{Text: "To", Widget: to},
 		},
 		OnSubmit: func() {
-			//TODO: send a email with template using AWS-SES
+			if err := ses.SendEmailWithTemplate(
+				from.Text,
+				to.Text,
+				repo.TemplateList().CurrSelectedTemplate(),
+				repo.EmailVarList().Map(),
+			); err != nil {
+				dialog.ShowError(errors.New("fail to send"), w)
+				log.Println("fail to send: ", err)
+				return
+			}
+			dialog.ShowInformation("success", fmt.Sprintf("success to send email to %s", to.Text), w)
 		},
 	}
 }

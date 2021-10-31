@@ -13,7 +13,7 @@ import (
 
 func MakeSelectedTemplateIndicator(currTemplate *widget.Label) *fyne.Container {
 	return container.NewHBox(
-		widget.NewIcon(theme.DocumentIcon()),
+		widget.NewIcon(theme.ConfirmIcon()),
 		widget.NewLabelWithStyle("Selected :", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		currTemplate,
 	)

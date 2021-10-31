@@ -10,10 +10,11 @@ import (
 )
 
 func MainView(w fyne.Window) fyne.CanvasObject {
+	tmplListTitle := component.MakeTemplateListTitle()
 	templList := component.MakeTemplateList(w)
 	uploadTemplBtn := component.MakeUploadBtn(w)
 
-	leftSide := container.NewBorder(nil, uploadTemplBtn, nil, nil, templList)
+	leftSide := container.NewBorder(tmplListTitle, uploadTemplBtn, nil, nil, templList)
 
 	selectedTmplateLabel := widget.NewLabel("")
 	emailSendFormTitle := component.MakeSendEmailTitle()

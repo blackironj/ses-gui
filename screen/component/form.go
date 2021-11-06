@@ -51,8 +51,8 @@ func MakeSendEmailForm(w fyne.Window) *widget.Form {
 				repo.TemplateList().CurrSelectedTemplate(),
 				repo.EmailVarList().Map(),
 			); err != nil {
-				dialog.ShowError(errors.New("fail to send"), w)
 				log.Println("fail to send: ", err)
+				dialog.ShowError(errors.New("fail to send\n"+err.Error()), w)
 				return
 			}
 			dialog.ShowInformation("success", fmt.Sprintf("success to send email to %s", to.Text), w)

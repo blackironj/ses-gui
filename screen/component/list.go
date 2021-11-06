@@ -77,8 +77,8 @@ func deleteFromS3(w fyne.Window, templateName string, itemID int) {
 
 		err := ses.DeleteSEStemplate(&templateName)
 		if err != nil {
-			dialog.ShowError(errors.New("fail to delete"), w)
 			log.Println("fail to delete a template: ", err)
+			dialog.ShowError(errors.New("fail to delete\n"+err.Error()), w)
 			return
 		}
 		repo.TemplateList().Delete(itemID)
@@ -97,8 +97,8 @@ func deleteFromS3(w fyne.Window, templateName string, itemID int) {
 func downloadToLocal(w fyne.Window, templateName string) {
 	output, err := ses.GetSEStemplate(&templateName)
 	if err != nil {
-		dialog.ShowError(errors.New("fail to download"), w)
 		log.Println("fail to get a template: ", err)
+		dialog.ShowError(errors.New("fail to download\n"+err.Error()), w)
 		return
 	}
 
@@ -113,8 +113,8 @@ func downloadToLocal(w fyne.Window, templateName string) {
 		filepath.Join(downPath, *output.Template.TemplateName+".html"),
 		[]byte(*output.Template.HtmlPart), 0644)
 	if writeErr != nil {
-		dialog.ShowError(errors.New("fail to save a template file"), w)
 		log.Println("fail to save a file: ", writeErr)
+		dialog.ShowError(errors.New("fail to save a template file\n"+writeErr.Error()), w)
 	}
 
 	infoWin := dialog.NewConfirm("Success", fmt.Sprintf("download path : %s", downPath),
@@ -175,7 +175,7 @@ func MakeUploadBtn(w fyne.Window) *widget.Button {
 				htmlFile, readFileErr := ioutil.ReadFile(filePath.Text)
 				if readFileErr != nil {
 					log.Println("failed to read a file: ", readFileErr)
-					dialog.ShowError(errors.New("failed to read a file"), w)
+					dialog.ShowError(errors.New("failed to read a file\n"+readFileErr.Error()), w)
 					return
 				}
 
@@ -189,7 +189,7 @@ func MakeUploadBtn(w fyne.Window) *widget.Button {
 				uploadErr := ses.UploadSEStemplate(inputTemplate)
 				if uploadErr != nil {
 					log.Println("fail to upload: ", uploadErr)
-					dialog.ShowError(errors.New("fail to upload"), w)
+					dialog.ShowError(errors.New("fail to upload\n"+uploadErr.Error()), w)
 					return
 				}
 				dialog.ShowInformation("Information", "Success to upload", w)

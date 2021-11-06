@@ -10,7 +10,7 @@ This is a GUI tool for uploading, downloading, deleting AWS-SES Email template e
 
 ## Demo
 
-![ex_img](./img/ses-gui-demo.jpg)
+![ex_img](./img/example-mainview.jpg)
 
 ## Build
 
@@ -21,12 +21,15 @@ This is a GUI tool for uploading, downloading, deleting AWS-SES Email template e
 ```
 golang 1.15+
 ```
+- You can find detailed prerequisites for building a `fyne` application on the website shown below.
+- https://developer.fyne.io/started/
 
 ### Windows
 
 ```bash
 go build -o ses-gui.exe -ldflags="-H windowsgui"
 ```
+> If you want to check more detail logs on terminal, remove `-ldflags="-H windowsgui" flag in commandline
 
 ## Feature
 
@@ -39,4 +42,7 @@ go build -o ses-gui.exe -ldflags="-H windowsgui"
 
 ### TODO
 
-- [ ] enhance UI / UX
+- [x] enhance UI / UX
+- Testing
+  - [ ] on Linux
+  - [ ] on MacOS

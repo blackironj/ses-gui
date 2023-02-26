@@ -18,9 +18,6 @@ This is a GUI tool for uploading, downloading, deleting AWS-SES Email template e
 
 ### Prerequisites
 
-```
-golang 1.15+
-```
 - You can find detailed prerequisites for building a `fyne` application on the website shown below.
 - https://developer.fyne.io/started/
 
